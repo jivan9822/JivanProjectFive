@@ -2,19 +2,31 @@ const { CatchAsync } = require('../Error/CatchAsync');
 const aws = require('aws-sdk');
 const AppError = require('../Error/AppError');
 
+// UPLOAD PHOTO
 exports.uploadPhots = CatchAsync(async (req, res, next) => {
+  // PARSING ADDRESS FIELD TO JSON OBJ
   req.body.address = req.body.address ? JSON.parse(req.body.address) : '';
+
+  // IMAGE UPLOAD
   if (req.files && req.files.length) {
+    // AWS CONFIGURATION
     aws.config.update({
       accessKeyId: process.env.AWS_ACCESSES,
       secretAccessKey: process.env.AWS_SEC_key,
       region: process.env.AWS_REGION,
     });
+
     const file = req.files[0];
+
+    // EXTRACTING FILE TYPE
     const ext = file.mimetype.split('/')[1];
+
+    // RETURN WITH ERROR IF NOT AN IMAGE
     if (!['jpg', 'jpeg', 'png', 'svg'].includes(ext)) {
       return next(new AppError(`You can upload only images!`, 400));
     }
+
+    // CREATING IMAGE URL AND SETTING IN BODY
     req.body.profileImage = await new Promise((resolve, reject) => {
       const s3 = new aws.S3({ apiVersion: '2006-03-01' });
 

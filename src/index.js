@@ -1,28 +1,31 @@
+require('dotenv').config({ path: 'config.env' });
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
 const multer = require('multer');
 const AppError = require('./Error/AppError');
 const { globalErrorHand } = require('./Error/GlobalError');
 
-const userRoute = require('./User/UserRoute');
-
-require('dotenv').config({ path: 'config.env' });
-const app = express();
 app.use(express.json());
 app.use(multer().any());
 
+// USER ROUTE
+const userRoute = require('./User/UserRoute');
+app.use('/user', userRoute);
+
+//MONGOOSE
 mongoose.set('strictQuery', true);
 mongoose
   .connect(process.env.MONGODB)
   .then(() => console.log('Connected to MONGODB!'))
   .catch((err) => console.log('Mongoose:', err));
 
-app.use('/user', userRoute);
-
+// ALL OTHER ROUTE
 app.all('*', (req, res, next) => {
   next(new AppError(`The Url ${req.originalUrl} not found on server!`, 404));
 });
 
+// GLOBAL ERROR HANDLER
 app.use(globalErrorHand);
 
 const port = process.env.PORT || 4100;

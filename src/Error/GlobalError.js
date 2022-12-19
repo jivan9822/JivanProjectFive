@@ -12,11 +12,13 @@ exports.globalErrorHand = (err, req, res, next) => {
   });
 };
 
+// MONGOOSE VALIDATION ERROR
 const validErrHandler = (error) => {
   error.statusCode = 400;
   return error;
 };
 
+// DUPLICATE ENTRY ERROR
 const duplicateError = (error) => {
   error.statusCode = 409;
   const msg = Object.keys(error.keyValue);

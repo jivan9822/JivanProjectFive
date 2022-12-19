@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const npmValidator = require('validator');
 
+// ADDRESS SCHEMA
 const addressSchema = mongoose.Schema({
   street: {
     type: String,
@@ -23,6 +24,7 @@ const addressSchema = mongoose.Schema({
   },
 });
 
+// USER SCHEMA
 const userSchema = mongoose.Schema(
   {
     //   fname: {string, mandatory},
@@ -89,7 +91,8 @@ const userSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-// bcrypt
+
+// BCRYPT PASSWORD
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
