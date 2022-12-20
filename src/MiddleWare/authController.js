@@ -1,6 +1,6 @@
 const AppError = require('../Error/AppError');
 const { CatchAsync } = require('../Error/CatchAsync');
-const User = require('./UserModel');
+const User = require('../User/UserModel');
 const jwt = require('jsonwebtoken');
 
 // TOKEN GENERATION FUNCTION

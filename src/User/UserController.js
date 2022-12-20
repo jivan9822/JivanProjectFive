@@ -35,7 +35,9 @@ exports.updateUserProfile = CatchAsync(async (req, res, next) => {
   if (!Object.keys(req.body).length) {
     return next(new AppError(`Nothing to update! Body is empty`, 400));
   }
-
+  if (req.body.address) {
+    req.body.address = JSON.parse(req.body.address);
+  }
   // UPDATE
   const user = await User.findByIdAndUpdate(
     { _id: req.params.userId },

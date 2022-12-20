@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const { uploadPhots } = require('../Utils/UploadPhoto');
-const { userLogin, protect } = require('./authController');
-const user = require('./UserController');
-
-// REGISTRATION ROUTE OF NEW USER
+const { userLogin, protect } = require('../MiddleWare/authController');
+const user = require('../User/UserController');
+const prod = require('../Product/ProductController');
 
 // FIRST CREATING IMAGE URL AND THEN CREATING USER
 router.post('/register', uploadPhots, user.createUser);
@@ -16,5 +15,7 @@ router
   .route('/:userId/profile')
   .get(protect, user.getUserProfile)
   .put(protect, uploadPhots, user.updateUserProfile);
+
+router.post('/products', uploadPhots, prod.createProduct);
 
 module.exports = router;

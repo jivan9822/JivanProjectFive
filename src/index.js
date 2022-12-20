@@ -9,11 +9,9 @@ const { globalErrorHand } = require('./Error/GlobalError');
 app.use(express.json());
 app.use(multer().any());
 
-// USER ROUTE
-const userRoute = require('./User/UserRoute');
-const productRoute = require('./Product/ProductRoute');
-app.use('/user', userRoute);
-app.use('/products', productRoute);
+// ROUTE
+const route = require('./Routs/route');
+app.use('/', route);
 
 //MONGOOSE
 mongoose.set('strictQuery', true);
