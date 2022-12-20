@@ -77,6 +77,7 @@ const userSchema = mongoose.Schema(
         /^.{8,15}$/,
         'password should be min length is 8 and max length is 15',
       ],
+      // select: false,
     },
     address: {
       shipping: {
@@ -98,6 +99,10 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
+
+userSchema.methods.correctPass = function (ogPass, hashPass) {
+  return bcrypt.compare(ogPass, hashPass);
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

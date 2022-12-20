@@ -12,3 +12,5 @@ exports.createUser = CatchAsync(async (req, res, next) => {
     },
   });
 });
+
+// USER LOGIN IS IN AUTH-CONTROLLER
