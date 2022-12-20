@@ -13,7 +13,6 @@ const generateToken = (id) => {
 // USER LOGIN CONTROLLER
 exports.userLogin = CatchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email, password); //
 
   // CHECK IF EMAIL AND PASSWORD IS NOT THERE
   if (!email || !password) {
@@ -30,7 +29,7 @@ exports.userLogin = CatchAsync(async (req, res, next) => {
 
   // GENERATING TOKEN
   const token = generateToken(user._id);
-  req.body.user = user;
+  req.user = user;
   return res.status(200).json({
     status: true,
     message: 'User login successful',
@@ -39,4 +38,37 @@ exports.userLogin = CatchAsync(async (req, res, next) => {
       token,
     },
   });
+});
+
+// USER AUTHORIZATION
+exports.protect = CatchAsync(async (req, res, next) => {
+  const { userId } = req.params;
+
+  // CHECKING TOKEN IS THERE IN HEADERS OR NOT
+  let token = req.headers.authorization;
+  if (!token && !token.startsWith('Bearer ')) {
+    return next(new AppError(`Token is not present!`, 401));
+  }
+
+  // EXTRACTING TOKEN
+  token = token.split(' ')[1];
+
+  // DECODE TOKEN
+  const decode = jwt.verify(token, process.env.JWT_SECRETE_STRING);
+
+  // GETTING USER FROM TOKEN ID
+  const user = await User.findById({ _id: decode.id });
+
+  // IF ID MISMATCH THEN RETURN ERROR
+  if (decode.id !== userId) {
+    return next(
+      new AppError(`You are not authorized to access the details!`, 403)
+    );
+  }
+
+  // ADDING USER TO REQ.BODY
+  req.user = user;
+
+  // AFTER DONE AUTHORIZATION PASSING TO NEXT FUNCTION
+  next();
 });
