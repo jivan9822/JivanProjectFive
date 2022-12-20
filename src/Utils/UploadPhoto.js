@@ -4,9 +4,6 @@ const AppError = require('../Error/AppError');
 
 // UPLOAD PHOTO
 exports.uploadPhots = CatchAsync(async (req, res, next) => {
-  // PARSING ADDRESS FIELD TO JSON OBJ
-  req.body.address = req.body.address ? JSON.parse(req.body.address) : '';
-
   // IMAGE UPLOAD
   if (req.files && req.files.length) {
     // AWS CONFIGURATION
@@ -27,7 +24,7 @@ exports.uploadPhots = CatchAsync(async (req, res, next) => {
     }
 
     // CREATING IMAGE URL AND SETTING IN BODY
-    req.body.profileImage = await new Promise((resolve, reject) => {
+    req.image = await new Promise((resolve, reject) => {
       const s3 = new aws.S3({ apiVersion: '2006-03-01' });
 
       const uploadParams = {

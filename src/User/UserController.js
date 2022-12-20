@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 
 // CREATE NEW USER CONTROLLER
 exports.createUser = CatchAsync(async (req, res, next) => {
+  // PARSING ADDRESS FIELD TO JSON OBJ
+  req.body.address = req.body.address ? JSON.parse(req.body.address) : '';
+  req.body.profileImage = req.image;
   const user = await User.create(req.body);
   res.status(201).json({
     status: true,
