@@ -4,6 +4,7 @@ const { userLogin, protect } = require('../MiddleWare/authController');
 const user = require('../User/UserController');
 const prod = require('../Product/ProductController');
 
+//! USER ROUTE
 // FIRST CREATING IMAGE URL AND THEN CREATING USER
 router.post('/register', uploadPhots, user.createUser);
 
@@ -16,6 +17,10 @@ router
   .get(protect, user.getUserProfile)
   .put(protect, uploadPhots, user.updateUserProfile);
 
-router.post('/products', uploadPhots, prod.createProduct);
+//! PRODUCE ROUTE
+router
+  .route('/products')
+  .post(uploadPhots, prod.createProduct)
+  .get(prod.getProductDetails);
 
 module.exports = router;
