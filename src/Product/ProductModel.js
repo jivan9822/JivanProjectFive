@@ -47,12 +47,16 @@ const productSchema = mongoose.Schema(
     style: String,
     //   availableSizes: ['S', 'XS', 'M', 'X', 'L', 'XXL', 'XL'],
     availableSizes: {
-      type: [String],
-      enum: {
-        values: ['S', 'XS', 'M', 'X', 'L', 'XXL', 'XL'],
-        message: `Please provide from 'S', 'XS', 'M', 'X', 'L', 'XXL', 'XL'`,
-      },
-      required: [true, 'Please provide size of produce!'],
+      type: [
+        {
+          type: String,
+          enum: {
+            values: ['S', 'XS', 'M', 'X', 'L', 'XXL', 'XL'],
+            message: `Please provide from 'S', 'XS', 'M', 'X', 'L', 'XXL', 'XL'`,
+          },
+        },
+      ],
+      required: [true, 'Please provide availableSizes of product!'],
     },
     //   installments: {number},//     style
     installments: Number,
