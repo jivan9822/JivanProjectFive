@@ -23,6 +23,7 @@ const productSchema = mongoose.Schema(
         message: 'Price should be greater than zero!',
       },
     },
+    brand: String,
     //   currencyId: {string, mandatory, INR},
     currencyId: {
       type: String,
@@ -75,8 +76,10 @@ const productSchema = mongoose.Schema(
 );
 
 productSchema.pre('save', function (next) {
+  if (this.installments) {
+    this.installments = this.installments.toFixed(0);
+  }
   this.price = ((this.price * 100) / 100).toFixed(2);
-  this.installments = this.installments.toFixed(0);
   next();
 });
 
