@@ -1,12 +1,10 @@
 const AppError = require('../Error/AppError');
-const { CatchAsync } = require('../Error/CatchAsync');
+const { CatchAsync, isJsonString } = require('../Error/CatchAsync');
 const User = require('./UserModel');
 const bcrypt = require('bcrypt');
 
 // CREATE NEW USER CONTROLLER
 exports.createUser = CatchAsync(async (req, res, next) => {
-  // PARSING ADDRESS FIELD TO JSON OBJ
-  req.body.address = req.body.address ? JSON.parse(req.body.address) : '';
   req.body.profileImage = req.image;
   const user = await User.create(req.body);
   res.status(201).json({
@@ -31,14 +29,8 @@ exports.getUserProfile = CatchAsync(async (req, res, next) => {
 
 // UPDATE USER PROFILE /:userId/profile
 exports.updateUserProfile = CatchAsync(async (req, res, next) => {
-  // IF BODY EMPTY RETURN WITH ERROR
-  if (!Object.keys(req.body).length) {
-    return next(new AppError(`Nothing to update! Body is empty`, 400));
-  }
-  if (req.body.address) {
-    req.body.address = JSON.parse(req.body.address);
-  }
   // UPDATE
+  req.body.profileImage = req.image;
   const user = await User.findByIdAndUpdate(
     { _id: req.params.userId },
     {
@@ -47,17 +39,20 @@ exports.updateUserProfile = CatchAsync(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
-  // SPECIAL PASSWORD UPDATE
-  user.password = await bcrypt.hash(req.body.password, 12);
-
-  // SKIP VALIDATION ON PASSWORD
-  await user.save({ validateBeforeSave: false });
+  const newPass = await bcrypt.hash(user.password, 12);
+  const newUser = await User.findByIdAndUpdate(
+    { _id: req.params.userId },
+    {
+      $set: { password: newPass },
+    },
+    { new: true }
+  );
 
   res.status(200).json({
     status: true,
     message: 'User profile updated',
     data: {
-      user,
+      newUser,
     },
   });
 });

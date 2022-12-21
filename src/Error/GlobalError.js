@@ -13,6 +13,12 @@ exports.globalErrorHand = (err, req, res, next) => {
   if (err.code === 11000) {
     err = duplicateError(err);
   }
+  if (err.name === 'SyntaxError') {
+    err = syntaxErrHandler(err);
+  }
+  if (err.kind === 'ObjectId') {
+    err = mongooseObjErr(err);
+  }
   res.status(err.statusCode || 500).json({
     status: false,
     msg: err.message,
@@ -39,3 +45,9 @@ const jwtExpHandler = (error) =>
 // JWT INVALID TOKEN
 const jwtTokenErrorHandler = (error) =>
   new AppError('Invalid token. Please log in again!', 401);
+
+const syntaxErrHandler = (error) =>
+  new AppError(`Invalid input! ${error.name}`, 400);
+
+const mongooseObjErr = (error) =>
+  new AppError(`Invalid ObjectId: ${error.value}`, 400);

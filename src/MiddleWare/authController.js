@@ -2,6 +2,7 @@ const AppError = require('../Error/AppError');
 const { CatchAsync } = require('../Error/CatchAsync');
 const User = require('../User/UserModel');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 // TOKEN GENERATION FUNCTION
 const generateToken = (id) => {
@@ -23,7 +24,9 @@ exports.userLogin = CatchAsync(async (req, res, next) => {
 
   // CHECKING EMAIL AND PASS IN DATA BASE
   const user = await User.findOne({ email });
-  if (!user || !(await user.correctPass(password, user.password))) {
+  // console.log(password, user.password);
+  // console.log(await user.correctPass(password, user.password));
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401));
   }
 

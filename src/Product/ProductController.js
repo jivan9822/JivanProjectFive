@@ -1,20 +1,11 @@
-const { CatchAsync } = require('../Error/CatchAsync');
+const { CatchAsync, isJsonString } = require('../Error/CatchAsync');
 const AppError = require('../Error/AppError');
 const Product = require('./ProductModel');
 const APIFeature = require('../Utils/APIFeaturs');
 
 exports.createProduct = CatchAsync(async (req, res, next) => {
-  req.body.product = req.body.product ? JSON.parse(req.body.product) : null;
-  if (!req.body.product) {
-    return next(
-      new AppError(
-        `Body is empty! Please provide products details in body.`,
-        400
-      )
-    );
-  }
-  req.body.product.productImage = req.image;
-  const product = await Product.create(req.body.product);
+  req.body.productImage = req.image;
+  const product = await Product.create(req.body);
   res.status(201).json({
     status: true,
     message: 'Success',
@@ -45,6 +36,57 @@ exports.getProductDetails = CatchAsync(async (req, res, next) => {
     result: `${products.length} Products found!`,
     data: {
       products,
+    },
+  });
+});
+
+exports.getProductById = CatchAsync(async (req, res, next) => {
+  const product = await Product.findById(req.params.productId);
+  if (!product) {
+    return next(
+      new AppError(`No product found with id: ${req.params.productId}`, 404)
+    );
+  }
+  res.status(200).json({
+    status: true,
+    message: 'Success',
+    data: {
+      product,
+    },
+  });
+});
+
+exports.updateProductById = CatchAsync(async (req, res, next) => {
+  req.body.productImage = req.image;
+  const product = await Product.findByIdAndUpdate(
+    { _id: req.params.productId },
+    {
+      $set: req.body,
+    },
+    { new: true, runValidators: true }
+  );
+  res.status(200).json({
+    status: true,
+    message: 'Success',
+    data: {
+      product,
+    },
+  });
+});
+
+exports.deleteProduct = CatchAsync(async (req, res, next) => {
+  const product = await Product.findByIdAndUpdate(
+    { _id: req.params.productId },
+    {
+      $set: { isDeleted: true, deletedAt: Date.now() },
+    },
+    { new: true, runValidators: true }
+  );
+  res.status(203).json({
+    status: true,
+    message: 'Success',
+    data: {
+      product,
     },
   });
 });

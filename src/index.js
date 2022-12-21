@@ -13,7 +13,7 @@ app.use(multer().any());
 const route = require('./Routs/route');
 app.use('/', route);
 
-//MONGOOSE
+// MONGOOSE
 mongoose.set('strictQuery', true);
 mongoose
   .connect(process.env.MONGODB)
