@@ -48,9 +48,14 @@ exports.createCart = CatchAsync(async (req, res, next) => {
 
 exports.updateCartById = CatchAsync(async (req, res, next) => {
   const { cartId, removeProduct, productId } = req.body;
-  const cart = await Cart.findById(cartId).select('+items.price');
+  const cart = await Cart.findOne({ userId: req.user._id }).select(
+    '+items.price'
+  );
+  if (cart._id != cartId) {
+    return next(new AppError(`CartId in body is not correct!`, 400));
+  }
   if (!cart) {
-    return next(new AppError(`The cart with this id dose not exist!`, 400));
+    return next(new AppError(`The cart with this id dose not exist!`, 404));
   }
   const ind = cart.items.findIndex((p) => p.productId == productId);
   if (ind === -1) {
@@ -62,7 +67,9 @@ exports.updateCartById = CatchAsync(async (req, res, next) => {
     );
   }
   if (removeProduct === 0 || cart.items[ind].quantity === 1) {
-    if (cart.items[ind].quantity) {
+    if (removeProduct === 0) {
+      cart.totalPrice -= cart.items[ind].price * cart.items[ind].quantity;
+    } else {
       cart.totalPrice -= cart.items[ind].price;
     }
     cart.items.splice(ind, 1);
@@ -70,7 +77,7 @@ exports.updateCartById = CatchAsync(async (req, res, next) => {
   } else {
     cart.items[ind].quantity--;
     cart.totalPrice -= cart.items[ind].price;
-    cart.totalItems = cart.items.length;
+    // cart.totalItems = cart.items.length;
   }
   await cart.save();
   res.status(200).json({
@@ -86,6 +93,9 @@ exports.getCartById = CatchAsync(async (req, res, next) => {
   const cart = await Cart.findOne({ userId: req.params.userId }).populate(
     'items.productId'
   );
+  if (req.params.userId !== req.body.userId) {
+    return next(new AppError(`UserId mismatch in params and body!`, 400));
+  }
   if (!cart) {
     return next(new AppError(`Cart dose not found for this user!`, 404));
   }
@@ -106,6 +116,9 @@ exports.deleteCartById = CatchAsync(async (req, res, next) => {
     },
     { new: true }
   );
+  if (!cart) {
+    return next(new AppError(`No cart present with this id!`, 404));
+  }
   res.status(204).json({
     data: null,
   });
