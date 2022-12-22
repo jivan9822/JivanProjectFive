@@ -21,6 +21,11 @@ const cartSchema = mongoose.Schema(
             required: [true, 'Please enter a Qty!'],
             min: 1,
           },
+          price: {
+            type: Number,
+            require: [true, 'Please provide price of product!'],
+            select: false,
+          },
         },
       ],
     },

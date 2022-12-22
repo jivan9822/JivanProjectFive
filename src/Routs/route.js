@@ -39,5 +39,6 @@ router
   .route('/users/:userId/cart')
   .post(protect, cart.createCart)
   .get(protect, cart.getCartById)
-  .put(protect, cart.updateCartById);
+  .put(protect, cart.updateCartById)
+  .delete(protect, cart.deleteCartById);
 module.exports = router;
