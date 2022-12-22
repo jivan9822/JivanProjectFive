@@ -4,14 +4,14 @@ const User = require('../User/UserModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-// TOKEN GENERATION FUNCTION
+//! TOKEN GENERATION FUNCTION
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRETE_STRING, {
     expiresIn: process.env.JWT_EXPIRATION,
   });
 };
 
-// USER LOGIN CONTROLLER
+//! USER LOGIN CONTROLLER
 exports.userLogin = CatchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -43,10 +43,9 @@ exports.userLogin = CatchAsync(async (req, res, next) => {
   });
 });
 
-// USER AUTHORIZATION
+//! USER AUTHORIZATION
 exports.protect = CatchAsync(async (req, res, next) => {
   const { userId } = req.params;
-
   // CHECKING TOKEN IS THERE IN HEADERS OR NOT
   let token = req.headers.authorization;
   if (!token && !token.startsWith('Bearer ')) {

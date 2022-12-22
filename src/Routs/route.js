@@ -1,8 +1,11 @@
 const router = require('express').Router();
 const { uploadPhots } = require('../Utils/UploadPhoto');
 const { userLogin, protect } = require('../MiddleWare/authController');
+
 const user = require('../User/UserController');
 const prod = require('../Product/ProductController');
+const cart = require('../Cart/CartController');
+
 const { isJsonString } = require('../Error/CatchAsync');
 
 //! USER ROUTE
@@ -30,4 +33,11 @@ router
   .put(isJsonString('product'), uploadPhots, prod.updateProductById)
   .delete(prod.deleteProduct);
 
+//! CART ROUTE
+
+router
+  .route('/users/:userId/cart')
+  .post(protect, cart.createCart)
+  .get(protect, cart.getCartById)
+  .put(protect, cart.updateCartById);
 module.exports = router;
