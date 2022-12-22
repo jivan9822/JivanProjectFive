@@ -65,6 +65,11 @@ exports.updateProductById = CatchAsync(async (req, res, next) => {
     },
     { new: true, runValidators: true }
   );
+  if (!product) {
+    return next(
+      new AppError(`Product not found with id: ${req.params.productId}!`, 404)
+    );
+  }
   res.status(200).json({
     status: true,
     message: 'Success',
@@ -82,6 +87,11 @@ exports.deleteProduct = CatchAsync(async (req, res, next) => {
     },
     { new: true, runValidators: true }
   );
+  if (!product) {
+    return next(
+      new AppError(`Product not found with id: ${req.params.productId}!`, 404)
+    );
+  }
   res.status(203).json({
     status: true,
     message: 'Success',
