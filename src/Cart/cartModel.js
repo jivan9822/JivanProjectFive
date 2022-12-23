@@ -35,6 +35,11 @@ const cartSchema = mongoose.Schema(
       required: true,
       // comment: 'Holds total price of all the items in the cart',
     },
+    totalQuantity: {
+      type: Number,
+      required: [true, 'Please add Total qty!'],
+      default: 1,
+    },
     totalItems: {
       type: Number,
       default: 1,

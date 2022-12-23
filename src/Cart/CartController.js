@@ -2,6 +2,7 @@ const { CatchAsync } = require('../Error/CatchAsync');
 const Cart = require('./cartModel');
 const Product = require('../Product/ProductModel');
 const AppError = require('../Error/AppError');
+const { emptyCart, updateUtil, addToCart } = require('../Utils/SmallUtils');
 
 exports.createCart = CatchAsync(async (req, res, next) => {
   const { userId, productId } = req.body;
@@ -29,19 +30,12 @@ exports.createCart = CatchAsync(async (req, res, next) => {
     });
   }
   const ind = userCart.items.findIndex((p) => p.productId == productId);
-  if (ind > -1) {
-    userCart.items[ind].quantity++;
-  } else {
-    userCart.items.push(req.body.items);
-    userCart.totalItems++;
-  }
-  userCart.totalPrice += product.price;
-  await userCart.save();
+  const newCart = await addToCart(query, ind, req.body.items).save();
   res.status(201).json({
     status: true,
     message: 'Success',
     data: {
-      userCart,
+      newCart,
     },
   });
 });
@@ -66,25 +60,13 @@ exports.updateCartById = CatchAsync(async (req, res, next) => {
       )
     );
   }
-  if (removeProduct === 0 || cart.items[ind].quantity === 1) {
-    if (removeProduct === 0) {
-      cart.totalPrice -= cart.items[ind].price * cart.items[ind].quantity;
-    } else {
-      cart.totalPrice -= cart.items[ind].price;
-    }
-    cart.items.splice(ind, 1);
-    cart.totalItems = cart.items.length;
-  } else {
-    cart.items[ind].quantity--;
-    cart.totalPrice -= cart.items[ind].price;
-    // cart.totalItems = cart.items.length;
-  }
-  await cart.save();
+  const cartNew = await updateUtil(removeProduct, cart, ind).save();
+
   res.status(200).json({
     status: true,
     message: 'Success',
     data: {
-      cart,
+      cartNew,
     },
   });
 });
@@ -109,13 +91,8 @@ exports.getCartById = CatchAsync(async (req, res, next) => {
 });
 
 exports.deleteCartById = CatchAsync(async (req, res, next) => {
-  const cart = await Cart.findOneAndUpdate(
-    { userId: req.params.userId },
-    {
-      $set: { items: [], totalItems: 0, totalPrice: 0 },
-    },
-    { new: true }
-  );
+  const query = Cart.find();
+  const cart = await emptyCart(query, req.params.userId);
   if (!cart) {
     return next(new AppError(`No cart present with this id!`, 404));
   }

@@ -5,6 +5,7 @@ const { userLogin, protect } = require('../MiddleWare/authController');
 const user = require('../User/UserController');
 const prod = require('../Product/ProductController');
 const cart = require('../Cart/CartController');
+const order = require('../Order/OrderController');
 
 const { isJsonString } = require('../Error/CatchAsync');
 
@@ -42,3 +43,7 @@ router
   .put(protect, cart.updateCartById)
   .delete(protect, cart.deleteCartById);
 module.exports = router;
+
+//! ORDER ROUTE
+// /users/:userId/orders
+router.route('/users/:userId/orders').post(protect, order.createOrder);
