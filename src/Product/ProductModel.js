@@ -28,11 +28,21 @@ const productSchema = mongoose.Schema(
     currencyId: {
       type: String,
       required: [true, 'Please provide currency id!'],
+      default: 'INR',
+      enum: {
+        values: ['INR', 'USD'],
+        message: 'Only INR and USD is supported!',
+      },
     },
-    //   currencyFormat: {string, mandatory, Rupee symbol},
+    //   currencyFormat: {string, mandatory, Rupee symbol}, ₹ $
     currencyFormat: {
       type: String,
       required: [true, 'Please provide currencyFormat!'],
+      default: '₹',
+      enum: {
+        values: ['₹', '$'],
+        message: 'Only ₹ and $ is supported!',
+      },
     },
     //   isFreeShipping: {boolean, default: false},
     isFreeShipping: {
