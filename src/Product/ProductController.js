@@ -3,6 +3,7 @@ const AppError = require('../Error/AppError');
 const Product = require('./ProductModel');
 const APIFeature = require('../Utils/APIFeaturs');
 
+// CREATE PRODUCT
 exports.createProduct = CatchAsync(async (req, res, next) => {
   req.body.productImage = req.image;
   const product = await Product.create(req.body);
@@ -15,6 +16,7 @@ exports.createProduct = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GET ALL PRODUCT WITH FILTER
 exports.getProductDetails = CatchAsync(async (req, res, next) => {
   // FILTER SORT FIELDS LIMIT PAGINATION
   const features = new APIFeature(Product.find(), req.query)
@@ -40,6 +42,7 @@ exports.getProductDetails = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GET PRODUCT BY ID
 exports.getProductById = CatchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) {
@@ -56,6 +59,7 @@ exports.getProductById = CatchAsync(async (req, res, next) => {
   });
 });
 
+// UPDATE PRODUCT BY ID
 exports.updateProductById = CatchAsync(async (req, res, next) => {
   req.body.productImage = req.image;
   const product = await Product.findByIdAndUpdate(
@@ -79,6 +83,7 @@ exports.updateProductById = CatchAsync(async (req, res, next) => {
   });
 });
 
+// DELETE PRODUCT BY ID
 exports.deleteProduct = CatchAsync(async (req, res, next) => {
   const product = await Product.findByIdAndUpdate(
     { _id: req.params.productId },

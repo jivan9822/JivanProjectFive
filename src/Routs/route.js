@@ -46,4 +46,7 @@ module.exports = router;
 
 //! ORDER ROUTE
 // /users/:userId/orders
-router.route('/users/:userId/orders').post(protect, order.createOrder);
+router
+  .route('/users/:userId/orders')
+  .post(protect, order.createOrder)
+  .put(protect, order.updateOrder);

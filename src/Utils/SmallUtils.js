@@ -1,15 +1,14 @@
-exports.emptyCart = (query, userId) => {
-  query.findOneAndUpdate(
-    { userId },
-    {
-      $set: { items: [], totalItems: 0, totalPrice: 0, totalQuantity: 0 },
-    },
-    { new: true }
-  );
-  return query;
+// MAKE CART EMPTY
+exports.emptyCart = (query) => {
+  query.items = [];
+  query.totalItems = 0;
+  query.totalPrice = 0;
+  query.totalQuantity = 0;
+  return query.save();
 };
 
-exports.updateUtil = (key, query, ind) => {
+// UPDATE CART BY REMOVING ITEM ONE OR DELETE ITEM FROM ARRAY
+exports.updateCart = (key, query, ind) => {
   if (key === 0 || query.items[ind].quantity === 1) {
     if (key === 0) {
       query.totalPrice -= query.items[ind].price * query.items[ind].quantity;
@@ -29,14 +28,15 @@ exports.updateUtil = (key, query, ind) => {
   return query;
 };
 
-exports.addToCart = (query, ind, items) => {
+// ADD TO CART
+exports.addToCart = (query, ind, items, price) => {
   if (ind > -1) {
-    userCart.items[ind].quantity++;
+    query.items[ind].quantity++;
   } else {
-    userCart.items.push(items);
-    userCart.totalItems++;
+    query.items.push(items);
+    query.totalItems++;
   }
-  userCart.totalPrice += product.price;
-  userCart.totalQuantity++;
-  return userCart;
+  query.totalPrice += price;
+  query.totalQuantity++;
+  return query;
 };

@@ -85,6 +85,7 @@ productSchema.pre('save', function (next) {
 
 productSchema.pre(/^find/, async function (next) {
   this.find({ isDeleted: false });
+  next();
 });
 
 const Product = mongoose.model('Product', productSchema);

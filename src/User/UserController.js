@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 
 // CREATE NEW USER CONTROLLER
 exports.createUser = CatchAsync(async (req, res, next) => {
+  // IMAGE URL SETTING TO BODY
   req.body.profileImage = req.image;
   const user = await User.create(req.body);
   res.status(201).json({
@@ -39,6 +40,7 @@ exports.updateUserProfile = CatchAsync(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
+  // THIS IS FOR PASSWORD UPDATE
   const newPass = await bcrypt.hash(user.password, 12);
   const newUser = await User.findByIdAndUpdate(
     { _id: req.params.userId },

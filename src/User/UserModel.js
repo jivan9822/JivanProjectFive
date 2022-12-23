@@ -100,6 +100,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// METHOD FOR VERIFICATION OF PASSWORD 
 userSchema.methods.correctPass = function (ogPass, hashPass) {
   return bcrypt.compare(ogPass, hashPass);
 };
