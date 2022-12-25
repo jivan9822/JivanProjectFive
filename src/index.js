@@ -1,34 +1,37 @@
 require('dotenv').config({ path: 'config.env' });
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
 const multer = require('multer');
+const userRoute = require('./Routes/UserRoute');
+const productRoute = require('./Routes/ProductRoute');
+const orderRoute = require('./Routes/OrderRoute');
+const cartRoute = require('./Routes/CartRoute');
 const AppError = require('./Error/AppError');
-const { globalErrorHand } = require('./Error/GlobalError');
+const { globalErrorHandler } = require('./Error/GlobalError');
+
+const app = express();
 
 app.use(express.json());
 app.use(multer().any());
 
-// ROUTE
-const route = require('./Routs/route');
-app.use('/', route);
-
-// MONGOOSE
 mongoose.set('strictQuery', true);
 mongoose
   .connect(process.env.MONGODB)
-  .then(() => console.log('Connected to MONGODB!'))
-  .catch((err) => console.log('Mongoose:', err));
+  .then(() => {
+    console.log('Connected to mongoDb!');
+  })
+  .catch((err) => console.log(err));
 
-// ALL OTHER ROUTE
+app.use('/user', userRoute);
+app.use('/product', productRoute);
+app.use('/cart', cartRoute);
+app.use('/order', orderRoute);
+
 app.all('*', (req, res, next) => {
-  next(new AppError(`The Url ${req.originalUrl} not found on server!`, 404));
+  return next(new AppError(`The ${req.originalUrl} not found on server!`));
 });
 
-// GLOBAL ERROR HANDLER
-app.use(globalErrorHand);
+app.use(globalErrorHandler);
 
-const port = process.env.PORT || 4100;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server start running on port ${port}`));
