@@ -73,3 +73,18 @@ exports.restrictTo = (roll) => {
     next();
   };
 };
+
+const Obj = {
+  user: ['address', 'fname', 'lname', 'email', 'profileImage', 'phone'],
+};
+
+exports.updateOnly = (field) => {
+  return (req, res, next) => {
+    for (const i in req.body) {
+      if (!Obj[field].includes(i)) {
+        delete req.body[i];
+      }
+    }
+    next();
+  };
+};

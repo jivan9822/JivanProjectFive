@@ -1,15 +1,23 @@
 const AppError = require('../Error/AppError');
 const { CatchAsync } = require('../Error/CatchAsync');
+const { updateOne } = require('../Models/cartModel');
 const Cart = require('../Models/cartModel');
 const Order = require('../Models/orderModel');
 const User = require('../Models/userModel');
 const APIFeatures = require('../Utils/APIFeature');
 
 exports.createUser = CatchAsync(async (req, res, next) => {
+  // RECEIVING PROFILE IMAGE URL FROM UPLOAD IMAGE MIDDLEWARE
   req.body.profileImage = req.image;
+
+  // CREATING USER FROM REQ BODY
   const user = await User.create(req.body);
+
+  // ONLY AFTER SUCCESSFUL USER CREATION WILL CREATE DEFAULT CART AND ORDER FOR USER
   const cart = await Cart.create({ userId: user._id });
   const order = await Order.create({ userId: user._id });
+
+  // SETTING CART ID AND ORDER ID TO USER
   user.cart = cart._id;
   user.order = order._id;
   await user.save({ validateBeforeSave: false });
@@ -22,6 +30,7 @@ exports.createUser = CatchAsync(async (req, res, next) => {
   });
 });
 
+// AFTER SUCCESSFUL AUTHENTICATION WILL ALLOW USER TO LOIN
 exports.userLogin = CatchAsync(async (req, res, next) => {
   res.status(200).json({
     status: true,
@@ -33,8 +42,16 @@ exports.userLogin = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GETTING ALL USER THIS IS ALLOW ONLY FOR ADMIN
 exports.getAllUsers = CatchAsync(async (req, res, next) => {
-  const feature = new APIFeatures(User.find(), req.query).filter();
+  // THIS WILL HIDE ADMIN DATA TO DISPLAY
+  req.query.roll = 'user';
+  const feature = new APIFeatures(User.find(), req.query)
+    .filter()
+    .limitFields()
+    .page()
+    .sort();
+
   const users = await feature.query;
   if (!users.length) {
     return next(new AppError(`No user found!`, 404));
@@ -48,6 +65,7 @@ exports.getAllUsers = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GET SELF USER DETAILS AFTER AUTHORIZATION ADMIN DON'T HAVE THIS ACCESS
 exports.getSelfDetails = CatchAsync(async (req, res, next) => {
   res.status(200).json({
     status: true,
@@ -55,4 +73,18 @@ exports.getSelfDetails = CatchAsync(async (req, res, next) => {
       user: req.user,
     },
   });
+});
+
+// THIS IS ONLY FOR USER HE CAN UPDATE address fname lname email profileImage phone ONLY;
+exports.updateUser = CatchAsync(async (req, res, next) => {
+  req.body.profileImage = req.image;
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: req.body,
+    },
+    { new: true, runValidators: true }
+  );
+  res.send(user);
 });

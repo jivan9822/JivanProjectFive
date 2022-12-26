@@ -7,7 +7,15 @@ const { isJson } = require('../MiddleWare/isJsonMiddleWare');
 router
   .route('/')
   .post(isJson('user'), uploadPhots, user.createUser)
-  .get(auth.protect, auth.restrictTo('admin'), user.getAllUsers);
+  .get(auth.protect, auth.restrictTo('admin'), user.getAllUsers)
+  .put(
+    auth.protect,
+    auth.restrictTo('user'),
+    isJson('user'),
+    auth.updateOnly('user'),
+    uploadPhots,
+    user.updateUser
+  );
 
 router.post('/login', auth.authentication, user.userLogin);
 
