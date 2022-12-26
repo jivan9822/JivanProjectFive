@@ -86,5 +86,29 @@ exports.updateUser = CatchAsync(async (req, res, next) => {
     },
     { new: true, runValidators: true }
   );
-  res.send(user);
+  res.status(200).json({
+    status: true,
+    data: {
+      user,
+    },
+  });
+});
+
+// DELETE USER ONLY ADMIN CAN PERFORM THIS OPERATION
+exports.deleteUser = CatchAsync(async (req, res, next) => {
+  const { userId } = req.params;
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: { isDeleted: true, deletedAt: Date.now() },
+    },
+    { new: true }
+  );
+  if (!user) {
+    return next(new AppError(`No user found with id: ${userId}`, 400));
+  }
+  res.status(204).json({
+    status: true,
+    data: null,
+  });
 });

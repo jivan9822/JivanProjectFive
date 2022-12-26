@@ -23,7 +23,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use('/user', userRoute);
-app.use('/product', productRoute);
+app.use('/products', productRoute);
 app.use('/cart', cartRoute);
 app.use('/order', orderRoute);
 

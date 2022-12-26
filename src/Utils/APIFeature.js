@@ -15,7 +15,11 @@ class APIFeatures {
       )
     );
 
-    ['fname', 'lname'].map((el) => {
+    if (queryObj.availableSizes) {
+      queryObj.availableSizes = queryObj.availableSizes.toUpperCase();
+    }
+
+    ['fname', 'lname', 'title', 'description', 'brand', 'style'].map((el) => {
       queryObj[el] && (queryObj[el] = new RegExp(`^${queryObj[el]}`, 'i'));
     });
 
@@ -29,7 +33,7 @@ class APIFeatures {
     return this;
   }
   limitFields() {
-    if (this.queryStr.limit) {
+    if (this.queryStr.fields) {
       this.query = this.query.select(this.queryStr.fields.split(',').join(' '));
     }
     return this;

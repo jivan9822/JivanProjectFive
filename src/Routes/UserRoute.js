@@ -21,4 +21,8 @@ router.post('/login', auth.authentication, user.userLogin);
 
 router.get('/self', auth.protect, auth.restrictTo('user'), user.getSelfDetails);
 
+router
+  .route('/:userId')
+  .delete(auth.protect, auth.restrictTo('admin'), user.deleteUser);
+
 module.exports = router;
