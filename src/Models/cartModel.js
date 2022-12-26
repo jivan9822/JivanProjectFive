@@ -17,6 +17,7 @@ const cartSchema = mongoose.Schema(
           },
           quantity: {
             type: Number,
+            default: 0,
           },
           price: {
             type: Number,
@@ -41,8 +42,6 @@ const cartSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-
-cartSchema.index({ userId: 1 });
 
 const Cart = mongoose.model('Cart', cartSchema);
 module.exports = Cart;
