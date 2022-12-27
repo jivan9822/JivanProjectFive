@@ -3,6 +3,7 @@ const { CatchAsync } = require('../Error/CatchAsync');
 const Product = require('../Models/productModel');
 const APIFeatures = require('../Utils/APIFeature');
 
+// CREATE PRODUCT
 exports.createProduct = CatchAsync(async (req, res, next) => {
   req.body.productImage = req.image;
   const product = await Product.create(req.body);
@@ -13,6 +14,7 @@ exports.createProduct = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GET ALL PRODUCTS
 exports.getAllProduct = CatchAsync(async (req, res, next) => {
   const features = new APIFeatures(Product.find(), req.query)
     .filter()
@@ -41,6 +43,8 @@ exports.getAllProduct = CatchAsync(async (req, res, next) => {
   });
 });
 
+
+// GET PRODUCT SINGLE PRODUCT
 exports.getProductById = CatchAsync(async (req, res, next) => {
   const feature = new APIFeatures(
     Product.findById(req.params.prodId),
@@ -56,6 +60,8 @@ exports.getProductById = CatchAsync(async (req, res, next) => {
   });
 });
 
+
+// UPDATE PRODUCT PRODUCT
 exports.updateProduct = CatchAsync(async (req, res, next) => {
   req.body.productImage = req.image;
   const product = await Product.findByIdAndUpdate(
@@ -75,6 +81,7 @@ exports.updateProduct = CatchAsync(async (req, res, next) => {
   });
 });
 
+// DELETE PRODUCT
 exports.deleteProduct = CatchAsync(async (req, res, next) => {
   const product = await Product.findByIdAndUpdate(
     req.params.prodId,

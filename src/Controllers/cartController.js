@@ -4,7 +4,6 @@ const Cart = require('../Models/cartModel');
 const Product = require('../Models/productModel');
 
 // ADD TO CART
-
 exports.addToCart = CatchAsync(async (req, res, next) => {
   // PRODUCT TO ADD IN CART FROM REQ BODY
   const productId = req.body.productId;
@@ -48,6 +47,7 @@ exports.addToCart = CatchAsync(async (req, res, next) => {
   });
 });
 
+// UPDATE CART
 exports.updateCart = CatchAsync(async (req, res, next) => {
   const cart = await Cart.findByIdAndUpdate(req.user.cart);
   const { productId } = req.body;
@@ -76,6 +76,7 @@ exports.updateCart = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GET CART DETAILS
 exports.getCart = CatchAsync(async (req, res, next) => {
   const cart = await Cart.findById(req.user.cart).populate('items.productId');
   res.status(200).json({
@@ -86,6 +87,7 @@ exports.getCart = CatchAsync(async (req, res, next) => {
   });
 });
 
+// DELETING CART
 exports.deleteCart = CatchAsync(async (req, res, next) => {
   const cart = await Cart.findByIdAndUpdate(req.user.cart, {
     $set: { totalPrice: 0, totalQuantity: 0, totalItems: 0, items: [] },

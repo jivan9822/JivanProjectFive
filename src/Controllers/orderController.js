@@ -4,6 +4,7 @@ const Cart = require('../Models/cartModel');
 const Order = require('../Models/orderModel');
 const APIFeatures = require('../Utils/APIFeature');
 
+// FUNCTION TO MAKE CART EMPTY
 const makeEmpty = (query) => {
   query.totalPrice = 0;
   query.totalQuantity = 0;
@@ -12,16 +13,24 @@ const makeEmpty = (query) => {
   return query;
 };
 
+// CRETE ORDER
 exports.createOrder = CatchAsync(async (req, res, next) => {
+  // GETTING DATA FROM CART TO CREATE ORDER
   const cart = await Cart.findById(req.user.cart);
   if (!cart.totalQuantity) {
     return next(
       new AppError('Cart is empty! Add product in cart to create order!', 400)
     );
   }
+
+  // CREATING OBJ TO CREATE ORDER
   const Obj = { ...cart._doc };
+  // REMOVING ID FROM OBJ
   delete Obj['_id'];
+
+  // CREATING ORDER
   const order = await Order.create(Obj);
+  // MAKING CART EMPTY
   await makeEmpty(cart).save();
 
   res.status(201).json({
@@ -31,6 +40,7 @@ exports.createOrder = CatchAsync(async (req, res, next) => {
   });
 });
 
+// GET ALL ORDERS WITH FILTER CANCELED PENDING PLACED
 exports.getAllOrders = CatchAsync(async (req, res, next) => {
   const features = new APIFeatures(Order.find(), req.query)
     .filter()
@@ -51,6 +61,7 @@ exports.getAllOrders = CatchAsync(async (req, res, next) => {
   });
 });
 
+// CANCEL A ORDER
 exports.cancelOrder = CatchAsync(async (req, res, next) => {
   const { orderId } = req.body;
   const order = await Order.findOneAndUpdate(
@@ -72,6 +83,7 @@ exports.cancelOrder = CatchAsync(async (req, res, next) => {
   });
 });
 
+// COMPLETE A ORDER
 exports.placeOrder = CatchAsync(async (req, res, next) => {
   const { orderId } = req.body;
   const order = await Order.findOneAndUpdate(
