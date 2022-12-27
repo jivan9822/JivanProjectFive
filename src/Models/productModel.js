@@ -69,9 +69,31 @@ const productSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
+    reviewAvg: {
+      type: Number,
+      default: 0,
+    },
+    review: {
+      type: String,
+      default: null,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'productId',
+  localField: '_id',
+});
 
 productSchema.pre('save', function (next) {
   if (this.installments) {

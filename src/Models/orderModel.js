@@ -42,13 +42,6 @@ const orderSchema = mongoose.Schema(
         message: 'status should be in "pending", "completed", "canceled"',
       },
     },
-    deletedAt: {
-      type: Date,
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );

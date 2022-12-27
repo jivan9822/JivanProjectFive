@@ -6,6 +6,7 @@ const userRoute = require('./Routes/UserRoute');
 const productRoute = require('./Routes/ProductRoute');
 const orderRoute = require('./Routes/OrderRoute');
 const cartRoute = require('./Routes/CartRoute');
+const reviewRoute = require('./Routes/ReviewRoute');
 const AppError = require('./Error/AppError');
 const { globalErrorHandler } = require('./Error/GlobalError');
 
@@ -27,6 +28,7 @@ app.use('/user', userRoute);
 app.use('/products', productRoute);
 app.use('/cart', cartRoute);
 app.use('/order', orderRoute);
+app.use('/review', reviewRoute);
 
 app.all('*', (req, res, next) => {
   return next(new AppError(`The ${req.originalUrl} not found on server!`));

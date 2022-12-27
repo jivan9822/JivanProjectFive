@@ -43,14 +43,15 @@ exports.getAllProduct = CatchAsync(async (req, res, next) => {
   });
 });
 
-
 // GET PRODUCT SINGLE PRODUCT
 exports.getProductById = CatchAsync(async (req, res, next) => {
   const feature = new APIFeatures(
     Product.findById(req.params.prodId),
     req.query
   ).limitFields();
-  const product = await feature.query;
+
+  const product = await feature.query.populate('reviews');
+
   if (!product) {
     return next(new AppError('No product found!', 400));
   }
@@ -59,7 +60,6 @@ exports.getProductById = CatchAsync(async (req, res, next) => {
     product,
   });
 });
-
 
 // UPDATE PRODUCT PRODUCT
 exports.updateProduct = CatchAsync(async (req, res, next) => {
