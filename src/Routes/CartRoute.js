@@ -6,6 +6,7 @@ router
   .route('/')
   .post(auth.protect, cart.addToCart)
   .put(auth.protect, cart.updateCart)
-  .delete(auth.protect, cart.deleteCart);
+  .delete(auth.protect, cart.deleteCart)
+  .get(auth.protect, cart.getCart);
 
 module.exports = router;

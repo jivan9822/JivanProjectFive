@@ -23,6 +23,17 @@ exports.getAllProduct = CatchAsync(async (req, res, next) => {
   if (!products.length) {
     return next(new AppError(`No products found!`, 404));
   }
+  // const products = await Product.aggregate([
+  //   {
+  //     $group: {
+  //       _id: '$brand',
+  //       totalProduct: { $sum: 1 },
+  //       maxPrice: { $max: '$price' },
+  //       minPrice: { $min: '$price' },
+  //       avgPrice: { $avg: '$price' },
+  //     },
+  //   },
+  // ]);
   res.status(200).json({
     status: true,
     result: `${products.length} products found!`,
