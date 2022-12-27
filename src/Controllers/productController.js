@@ -47,6 +47,9 @@ exports.getProductById = CatchAsync(async (req, res, next) => {
     req.query
   ).limitFields();
   const product = await feature.query;
+  if (!product) {
+    return next(new AppError('No product found!', 400));
+  }
   res.status(200).json({
     status: true,
     product,

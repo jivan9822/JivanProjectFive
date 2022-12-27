@@ -19,25 +19,30 @@ class APIFeatures {
       queryObj.availableSizes = queryObj.availableSizes.toUpperCase();
     }
 
-    ['fname', 'lname', 'title', 'description', 'brand', 'style'].map((el) => {
-      queryObj[el] && (queryObj[el] = new RegExp(`^${queryObj[el]}`, 'i'));
-    });
+    ['fname', 'lname', 'title', 'description', 'brand', 'style', 'status'].map(
+      (el) => {
+        queryObj[el] && (queryObj[el] = new RegExp(`^${queryObj[el]}`, 'i'));
+      }
+    );
 
     this.query = this.query.find(queryObj);
     return this;
   }
+
   sort() {
     if (this.queryStr.sort) {
       this.query = this.query.sort(this.queryStr.sort);
     }
     return this;
   }
+
   limitFields() {
     if (this.queryStr.fields) {
       this.query = this.query.select(this.queryStr.fields.split(',').join(' '));
     }
     return this;
   }
+
   page() {
     if (this.queryStr.page) {
       const limit = this.queryStr.limit * 1 || 2;

@@ -4,6 +4,7 @@ const auth = require('../MiddleWare/authoriZation');
 const { isJson } = require('../MiddleWare/isJsonMiddleWare');
 const { uploadPhots } = require('../MiddleWare/uploadPhotos');
 
+// PRODUCT CREATE / GET ALL
 router
   .route('/')
   .post(
@@ -15,14 +16,16 @@ router
   )
   .get(auth.protect, prod.getAllProduct);
 
+// PRODUCT GET ONE / UPDATE / DELETE
 router
   .route('/:prodId')
   .get(auth.protect, prod.getProductById)
   .put(
     auth.protect,
-    isJson('product'),
-    uploadPhots,
     auth.restrictTo('admin'),
+    isJson('product'),
+    auth.updateOnly('product'),
+    uploadPhots,
     prod.updateProduct
   )
   .delete(auth.protect, auth.restrictTo('admin'), prod.deleteProduct);

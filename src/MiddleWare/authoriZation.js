@@ -76,6 +76,18 @@ exports.restrictTo = (roll) => {
 
 const Obj = {
   user: ['address', 'fname', 'lname', 'email', 'profileImage', 'phone'],
+  product: [
+    'title',
+    'description',
+    'price',
+    'brand',
+    'currencyId',
+    'currencyFormat',
+    'isFreeShipping',
+    'productImage',
+    'style',
+    'availableSizes',
+  ],
 };
 
 exports.updateOnly = (field) => {

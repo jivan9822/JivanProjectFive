@@ -13,13 +13,11 @@ exports.createUser = CatchAsync(async (req, res, next) => {
   // CREATING USER FROM REQ BODY
   const user = await User.create(req.body);
 
-  // ONLY AFTER SUCCESSFUL USER CREATION WILL CREATE DEFAULT CART AND ORDER FOR USER
+  // ONLY AFTER SUCCESSFUL USER CREATION WILL CREATE DEFAULT CART
   const cart = await Cart.create({ userId: user._id });
-  const order = await Order.create({ userId: user._id });
 
   // SETTING CART ID AND ORDER ID TO USER
   user.cart = cart._id;
-  user.order = order._id;
   await user.save({ validateBeforeSave: false });
   res.status(201).json({
     status: true,

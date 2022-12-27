@@ -22,6 +22,7 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+// ALL ROUTER
 app.use('/user', userRoute);
 app.use('/products', productRoute);
 app.use('/cart', cartRoute);

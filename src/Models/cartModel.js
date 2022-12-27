@@ -28,7 +28,6 @@ const cartSchema = mongoose.Schema(
     totalPrice: {
       type: Number,
       default: 0,
-      // comment: 'Holds total price of all the items in the cart',
     },
     totalQuantity: {
       type: Number,
@@ -37,7 +36,6 @@ const cartSchema = mongoose.Schema(
     totalItems: {
       type: Number,
       default: 0,
-      // comment: 'Holds total number of items in the cart',
     },
   },
   { timestamps: true }

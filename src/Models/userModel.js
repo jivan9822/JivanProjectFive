@@ -8,12 +8,10 @@ const addressSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please add street name!'],
   },
-  // city: {string, mandatory},
   city: {
     type: String,
     required: [true, 'Please add city name!'],
   },
-  // pincode: {number, mandatory}
   pincode: {
     type: Number,
     required: [true, 'Please add pincode name!'],
@@ -27,7 +25,6 @@ const addressSchema = mongoose.Schema({
 // USER SCHEMA
 const userSchema = mongoose.Schema(
   {
-    //   fname: {string, mandatory},
     fname: {
       type: String,
       required: [true, 'Please provide First Name'],
@@ -36,7 +33,6 @@ const userSchema = mongoose.Schema(
         message: 'Please enter only alphabets!',
       },
     },
-    //   lname: {string, mandatory},
     lname: {
       type: String,
       required: [true, 'Please provide Last Name'],
@@ -45,7 +41,6 @@ const userSchema = mongoose.Schema(
         message: 'Please enter only alphabets!',
       },
     },
-    //   email: {string, mandatory, valid email, unique},
     email: {
       type: String,
       required: [true, 'Please provide a email!'],
@@ -60,12 +55,10 @@ const userSchema = mongoose.Schema(
       required: [true, 'Please provide roll of user!'],
       default: 'user',
     },
-    //   profileImage: {string, mandatory}, // s3 link
     profileImage: {
       type: String,
       required: [true, 'Please provide profile image'],
     },
-    //   phone: {string, mandatory, unique, valid Indian mobile number},
     phone: {
       type: String,
       required: [true, 'Please provide use phone number'],
@@ -74,7 +67,6 @@ const userSchema = mongoose.Schema(
         validator: (el) => npmValidator.isMobilePhone(el, ['en-IN']),
       },
     },
-    //   password: {string, mandatory, minLen 8, maxLen 15}, // encrypted password
     password: {
       type: String,
       required: [true, 'Please provide a password!'],
@@ -115,9 +107,6 @@ const userSchema = mongoose.Schema(
     cart: {
       type: mongoose.Types.ObjectId,
     },
-    order: {
-      type: mongoose.Types.ObjectId,
-    },
   },
   { timestamps: true }
 );
@@ -135,6 +124,7 @@ userSchema.methods.correctPass = async function (ogPass, hashPass) {
   return await bcrypt.compare(ogPass, hashPass);
 };
 
+// THIS IS IF WE CHANGE PASSWORD AND TRY TO ACCESS WITH OLD TOKEN
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
@@ -146,6 +136,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
+// THIS WILL RETURN DOC WHICH NOT DELETED
 userSchema.pre(/^find/, function (next) {
   this.find({ isDeleted: false });
   next();
