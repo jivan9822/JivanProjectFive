@@ -42,7 +42,10 @@ exports.createOrder = CatchAsync(async (req, res, next) => {
 
 // GET ALL ORDERS WITH FILTER CANCELED PENDING PLACED
 exports.getAllOrders = CatchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Order.find(), req.query)
+  const features = new APIFeatures(
+    Order.find({ userId: req.user._id }),
+    req.query
+  )
     .filter()
     .limitFields()
     .page()

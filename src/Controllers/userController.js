@@ -65,10 +65,12 @@ exports.getAllUsers = CatchAsync(async (req, res, next) => {
 
 // GET SELF USER DETAILS AFTER AUTHORIZATION ADMIN DON'T HAVE THIS ACCESS
 exports.getSelfDetails = CatchAsync(async (req, res, next) => {
+  const user = await req.user.populate('orders');
+
   res.status(200).json({
     status: true,
     data: {
-      user: req.user,
+      user,
     },
   });
 });

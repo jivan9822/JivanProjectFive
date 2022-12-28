@@ -48,7 +48,7 @@ exports.updateReview = CatchAsync(async (req, res, next) => {
   );
 });
 exports.deleteReview = CatchAsync(async (req, res, next) => {
-  const review = await Review.findByIdAndDelete(req.params.reviewId);
+  const review = await Review.findOneAndDelete(req.params.reviewId);
   if (!review) {
     return next(new AppError('No review found with this id!', 404));
   }

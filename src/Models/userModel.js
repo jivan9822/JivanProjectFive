@@ -108,8 +108,14 @@ const userSchema = mongoose.Schema(
       type: mongoose.Types.ObjectId,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+userSchema.virtual('orders', {
+  ref: 'Order',
+  foreignField: 'userId',
+  localField: '_id',
+});
 
 // BCRYPT PASSWORD
 userSchema.pre('save', async function (next) {

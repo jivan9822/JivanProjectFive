@@ -76,10 +76,7 @@ const productSchema = mongoose.Schema(
     reviewAvg: {
       type: Number,
       default: 0,
-    },
-    review: {
-      type: String,
-      default: null,
+      set: (val) => Math.round(val * 100) / 100,
     },
   },
   {
