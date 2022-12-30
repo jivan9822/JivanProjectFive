@@ -53,6 +53,10 @@ const userSchema = mongoose.Schema(
     roll: {
       type: String,
       required: [true, 'Please provide roll of user!'],
+      enum: {
+        values: ['user'],
+        message: 'Only user is allowed from body!',
+      },
       default: 'user',
     },
     profileImage: {
